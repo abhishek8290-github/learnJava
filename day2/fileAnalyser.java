@@ -27,16 +27,12 @@ public class fileAnalyser {
         int i =0;
         for (File file : files ){
             if(!checkFileExtension(file, ".txt")) continue;
-            
             fileStats.IfileStats _fileStats = fileStats.getFileState(file);
-            
             fileStatsArr[i++] = _fileStats;
-            
-
         }
 
         for (fileStats.IfileStats _fileStats : fileStatsArr){
-            
+            System.out.print(_fileStats.toString());
         }
     }
 }
