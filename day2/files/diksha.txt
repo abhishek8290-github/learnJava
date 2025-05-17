@@ -1,0 +1,60 @@
+
+
+A **compiler** is a program that translates **source code** written in a high-level language (like Java, C, or Kotlin) into another form — usually:
+
+- **Machine code** (for direct execution by the CPU)  
+    **or**
+    
+- **Intermediate code** (like Java **bytecode**, which runs on a VM)
+    
+
+---
+
+## 🔸 What a Compiler Actually Does
+
+It **analyzes** your code and performs multiple stages:
+
+|Stage|What It Does|
+|---|---|
+|**Lexical Analysis**|Breaks code into tokens (keywords, variables, etc.)|
+|**Syntax Analysis**|Checks grammar (e.g., matching `{}`, method structure)|
+|**Semantic Analysis**|Validates type safety, variable usage, etc.|
+|**Intermediate Code Generation**|Converts code to bytecode or IR|
+|**Optimization**|Improves performance (e.g., removes dead code)|
+|**Code Generation**|Outputs bytecode or native machine code|
+
+---
+
+## 🔹 Java Compiler (`javac`)
+
+For Java, the compiler:
+
+- Takes `.java` files
+    
+- Produces `.class` files containing **bytecode**
+    
+- That bytecode runs on the **JVM**, not directly on the CPU
+    
+
+```bash
+javac MyApp.java   # Compile to bytecode
+java MyApp         # JVM runs it
+```
+
+---
+
+## 🔸 Compiler vs Interpreter
+
+|Feature|Compiler|Interpreter|
+|---|---|---|
+|Output|Machine code or bytecode|Executes code line by line|
+|Speed|Faster after compilation|Slower due to real-time parsing|
+|Java Uses|`javac` for compilation → JVM runs/interprets|JVM includes both interpreter & JIT compiler|
+
+---
+
+## ✅ TL;DR
+
+> A **compiler** converts source code into lower-level code (machine code or bytecode), so it can be executed efficiently by hardware or a virtual machine.
+
+Let me know if you want to walk through how `javac` translates a specific Java snippet into bytecode.

@@ -1,8 +1,9 @@
 package day2;
 import java.io.File;
 
+import day2.interfaces.Runnable;
 
-public class fileAnalyser {
+public class fileAnalyser implements Runnable {
     
     public static String getCurrentWorkingDirectory(){
         return System.getProperty("user.dir");
@@ -17,7 +18,7 @@ public class fileAnalyser {
         return file.getName().endsWith(extension);
     }
     
-    public static void main(String[] args) {
+    public  void run() {
         String fileAddress = getCurrentWorkingDirectory() + "/day2/files";
         
         File[] files = getAllFilesFromAnAddress(fileAddress);
