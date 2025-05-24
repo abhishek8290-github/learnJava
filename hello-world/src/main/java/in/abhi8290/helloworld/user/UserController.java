@@ -27,16 +27,25 @@ public class UserController {
         return userService.findAll();
     }
 
+    @GetMapping("/{id}")
+    public User getUserById(@PathVariable String id) {
+        return userService.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with ID: " + id));
+    }
+
     // GET user by email
     @GetMapping("/by-email")
-    public Optional<User> getUserByEmail(@RequestParam String email) {
+    public Optional<User> getUserByEmail(@RequestParam String email) throws Exception {
         return userService.findByEmail(email);
     }
 
+
+
     // POST create a user
     @PostMapping
-    public User createUser(@RequestBody User user) {
+    public Optional<User> createUser(@RequestBody User user) throws Exception {
         logger.info("Creating user with email: {}", user.getEmail());
-        return userService.save(user);
+
+        return userService.createUser(user);
     }
 }

@@ -1,6 +1,7 @@
 package in.abhi8290.helloworld.user;
 
 import in.abhi8290.helloworld.core.base.BaseEntity;
+import in.abhi8290.helloworld.shared.util.hashUtil;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -9,14 +10,18 @@ import jakarta.persistence.Table;
 @Table(name = "users")
 public class User extends BaseEntity {
 
+
+
     @Column(nullable = false)
     private String firstName;
 
     @Column(nullable = false)
     private String lastName;
 
+
     @Column(nullable = false)
     private String password;
+
 
     @Column(unique = true, nullable = false)
     private String email;
@@ -30,7 +35,6 @@ public class User extends BaseEntity {
         this.password  = password;
     }
 
-    // Getters and Setters
 
     public String getFirstName() {
         return firstName;
@@ -47,14 +51,13 @@ public class User extends BaseEntity {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
-
+    public void setPassword(String password) {
+        this.password = password;
+    }
     public String getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
 
     public String getEmail() {
         return email;
