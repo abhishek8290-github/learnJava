@@ -1,4 +1,4 @@
-package in.abhi8290.helloworld.auth.dto;
+package in.abhi8290.helloworld.core.exception;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;

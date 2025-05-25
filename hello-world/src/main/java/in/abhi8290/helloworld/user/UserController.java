@@ -1,13 +1,16 @@
 package in.abhi8290.helloworld.user;
 
 import in.abhi8290.helloworld.shared.TokenService;
+
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-import in.abhi8290.helloworld.user.*;
+
 
 @RestController
 @RequestMapping("/users")
@@ -37,7 +40,7 @@ public class UserController {
             throw new RuntimeException("Missing or invalid Authorization header");
         }
 
-        String token = authHeader.substring(7); // Remove "Bearer "
+        String token = authHeader.split("Bearer ")[1];
         String userId = tokenService.validateAccessToken(token); // Will throw if invalid
 
         return userService.findById(userId)
@@ -46,9 +49,6 @@ public class UserController {
 
     @GetMapping("/{id}")
     public User getUserById(@PathVariable String id) {
-
-
-
         return userService.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found with ID: " + id));
     }
@@ -63,9 +63,9 @@ public class UserController {
 
     // POST create a user
     @PostMapping
-    public Optional<User> createUser(@RequestBody User user) throws Exception {
+    public ResponseEntity<Optional<User>> createUser(@RequestBody User user) throws Exception {
         logger.info("Creating user with email: {}", user.getEmail());
 
-        return userService.createUser(user);
+        return ResponseEntity.ok(userService.createUser(user));
     }
 }

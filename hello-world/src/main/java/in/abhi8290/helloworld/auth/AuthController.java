@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 import in.abhi8290.helloworld.user.User;
 import in.abhi8290.helloworld.auth.dto.*;
+import org.springframework.http.ResponseEntity;
 
 
 
@@ -26,7 +27,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public LoginResponseDto login(@RequestBody LoginRequestDto request) throws Exception {
-        return authService.authenticate(request.getUsername(), request.getPassword());
+    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto request) throws Exception {
+        return ResponseEntity.ok(authService.authenticate(request.getUsername(), request.getPassword()));
     }
 }

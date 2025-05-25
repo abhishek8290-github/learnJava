@@ -1,6 +1,7 @@
 package in.abhi8290.helloworld.user;
 
 import in.abhi8290.helloworld.core.base.BaseService;
+import in.abhi8290.helloworld.user.exception.UserAlreadyExistsException;
 import org.springframework.stereotype.Service;
 import in.abhi8290.helloworld.shared.util.hashUtil;
 
@@ -30,6 +31,13 @@ public class UserService extends BaseService<User, String> {
 
 
     public Optional<User>  createUser(User user) throws Exception {
+
+        if(findByEmail(user.getEmail()).isPresent()){
+            throw new UserAlreadyExistsException("User Already Exists");
+        }
+
+
+
         String hashedPassword = hashUtil.getHashedPasswordWithSaltAndAlgorithm(user.getPassword());
         user.setPassword(hashedPassword);
         save(user);

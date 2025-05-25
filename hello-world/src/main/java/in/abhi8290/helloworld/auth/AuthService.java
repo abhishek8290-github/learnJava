@@ -5,6 +5,12 @@ import java.util.Optional;
 import in.abhi8290.helloworld.shared.util.hashUtil;
 import org.springframework.stereotype.Service;
 import in.abhi8290.helloworld.shared.TokenService;
+import in.abhi8290.helloworld.auth.exception.UserNotFoundException;
+import in.abhi8290.helloworld.auth.exception.IncorrectPasswordException;
+import org.springframework.web.bind.annotation.*;
+
+import org.springframework.http.ResponseEntity;
+
 @Service
 public class AuthService {
 
@@ -29,11 +35,16 @@ public class AuthService {
 
         Optional<User> currentUser = userService.findByEmail(email);;
 
-        if (currentUser.isEmpty())  throw new Exception("User Not Found");
 
+
+        if (currentUser.isEmpty()) {
+            throw new UserNotFoundException("User not found with email: " + email);
+        }
         boolean correctUser = hashUtil.verifyPassword(password, currentUser.get().getPassword());
 
-        if(!correctUser) throw new Exception("Incorrect Password");
+        if(!correctUser) throw new IncorrectPasswordException("Invalid Password Provided");
+
+
 
         return new LoginResponseDto("Refresh token ", getAccessToken(currentUser.get().getId()));
 
