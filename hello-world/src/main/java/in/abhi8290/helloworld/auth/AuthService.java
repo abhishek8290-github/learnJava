@@ -1,30 +1,41 @@
 package in.abhi8290.helloworld.auth;
 import in.abhi8290.helloworld.user.*;
-
+import in.abhi8290.helloworld.auth.dto.*;
 import java.util.Optional;
 import in.abhi8290.helloworld.shared.util.hashUtil;
 import org.springframework.stereotype.Service;
-
+import in.abhi8290.helloworld.shared.TokenService;
 @Service
 public class AuthService {
 
-
     public final UserService userService;
 
+    TokenService tokenService = new TokenService();
 
 
     public AuthService(UserService userService) {
         this.userService = userService;
+
+
+
     }
 
-    public Optional<User> authenticate(String email, String password) throws Exception {
-        Optional<User> user = userService.findByEmail(email);
-        if (user.isEmpty())  throw new Exception("User Not Found");
-        boolean correctUser = hashUtil.verifyPassword(password, user.get().getPassword());
+    private String getAccessToken(String userId) {
+        return tokenService.generateAccessToken(userId);
+    }
 
-        if(!correctUser) {
-            throw new Exception("Incorrect Password");
-        }
-        return user ;
+
+    public LoginResponseDto authenticate(String email, String password) throws Exception {
+
+        Optional<User> currentUser = userService.findByEmail(email);;
+
+        if (currentUser.isEmpty())  throw new Exception("User Not Found");
+
+        boolean correctUser = hashUtil.verifyPassword(password, currentUser.get().getPassword());
+
+        if(!correctUser) throw new Exception("Incorrect Password");
+
+        return new LoginResponseDto("Refresh token ", getAccessToken(currentUser.get().getId()));
+
     }
 }

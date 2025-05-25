@@ -12,6 +12,8 @@ import in.abhi8290.helloworld.auth.dto.*;
 
 
 
+
+
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -24,7 +26,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public Optional<User> login(@RequestBody LoginRequestDto request) throws Exception {
+    public LoginResponseDto login(@RequestBody LoginRequestDto request) throws Exception {
         return authService.authenticate(request.getUsername(), request.getPassword());
     }
 }

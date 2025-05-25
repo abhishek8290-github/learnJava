@@ -41,7 +41,7 @@ public class hashUtil {
 
 
 
-
+    // To Do: Better Naming for the input params
     public static boolean verifyPassword(String password, String hash) throws Exception {
         String[] splittedString = hash.split("\\$");
         byte[] salt = Base64.getDecoder().decode(splittedString[2]);
