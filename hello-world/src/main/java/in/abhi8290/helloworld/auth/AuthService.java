@@ -21,12 +21,9 @@ public class AuthService {
 
     public AuthService(UserService userService) {
         this.userService = userService;
-
-
-
     }
 
-    private String getAccessToken(String userId) {
+    public String getAccessToken(String userId) {
         return tokenService.generateAccessToken(userId);
     }
 
@@ -35,8 +32,6 @@ public class AuthService {
 
         Optional<User> currentUser = userService.findByEmail(email);;
 
-
-
         if (currentUser.isEmpty()) {
             throw new UserNotFoundException("User not found with email: " + email);
         }
@@ -44,9 +39,32 @@ public class AuthService {
 
         if(!correctUser) throw new IncorrectPasswordException("Invalid Password Provided");
 
+        return new LoginResponseDto("Refresh token ", getAccessToken(currentUser.get().getId()));
+
+    }
+
+
+    public LoginResponseDto registerUser(RegisterUserDto userToCreate) throws Exception {
+
+        User user = userService.createUser( new User(
+                userToCreate.getFirstName(),
+                userToCreate.getLastName(),
+                userToCreate.getEmail(),
+                userToCreate.getPassword()
+        ));
+
+        return new LoginResponseDto("Refresh token ", getAccessToken(user.getId()));
+    }
+
+    public LoginResponseDto logoutUser(String userId) throws Exception {
+        Optional<User> currentUser = userService.findById(userId);
+        if (currentUser.isEmpty()) {
+            throw new UserNotFoundException("User not found with email: " + userId);
+        }
 
 
         return new LoginResponseDto("Refresh token ", getAccessToken(currentUser.get().getId()));
 
     }
+
 }

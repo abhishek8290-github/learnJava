@@ -1,13 +1,9 @@
 package in.abhi8290.helloworld.user;
-
 import in.abhi8290.helloworld.shared.TokenService;
-
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -35,16 +31,14 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public User getCurrentUser(@RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<User> getCurrentUser(@RequestHeader("Authorization") String authHeader) throws Exception {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             throw new RuntimeException("Missing or invalid Authorization header");
         }
-
         String token = authHeader.split("Bearer ")[1];
-        String userId = tokenService.validateAccessToken(token); // Will throw if invalid
-
-        return userService.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found for token"));
+        String userId = tokenService.validateAccessToken(token);
+        User user = userService.findUserById(userId);
+        return ResponseEntity.ok(user);
     }
 
     @GetMapping("/{id}")
@@ -63,7 +57,7 @@ public class UserController {
 
     // POST create a user
     @PostMapping
-    public ResponseEntity<Optional<User>> createUser(@RequestBody User user) throws Exception {
+    public ResponseEntity<User> createUser(@RequestBody User user) throws Exception {
         logger.info("Creating user with email: {}", user.getEmail());
 
         return ResponseEntity.ok(userService.createUser(user));

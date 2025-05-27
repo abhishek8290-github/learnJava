@@ -1,5 +1,6 @@
 package in.abhi8290.helloworld.shared;
 
+import in.abhi8290.helloworld.core.exception.common.InvalidTokenError;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Service;
@@ -41,13 +42,20 @@ public class TokenService {
      * @return user ID (from sub claim)
      * @throws JwtException if invalid or expired
      */
-    public String validateAccessToken(String token) {
+    public String validateAccessToken(String token) throws Exception {
 
-        return Jwts.parserBuilder()
-                .setSigningKey(SECRET_KEY)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+
+
+        try{
+            return Jwts.parserBuilder()
+                    .setSigningKey(SECRET_KEY)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody()
+                    .getSubject();
+        }catch(RuntimeException e){
+            throw new InvalidTokenError("Token Provided is Not Valid");
+        }
+
     }
 }

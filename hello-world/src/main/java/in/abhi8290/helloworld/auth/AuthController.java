@@ -26,8 +26,26 @@ public class AuthController {
         this.authService = authService;
     }
 
+
+    @PostMapping("/register")
+    public ResponseEntity<LoginResponseDto> register(@RequestBody RegisterUserDto request) throws Exception {
+        LoginResponseDto loginResponse = authService.registerUser(request);
+        return ResponseEntity.ok(loginResponse);
+    }
+
+
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto request) throws Exception {
         return ResponseEntity.ok(authService.authenticate(request.getUsername(), request.getPassword()));
     }
+    @PostMapping("/logout")
+    public ResponseEntity<LoginResponseDto> logout(@RequestBody LoginRequestDto request) throws Exception {
+        return ResponseEntity.ok(authService.logoutUser(request.getUsername()));
+    }
+
+
+
+
+
+
 }
