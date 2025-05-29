@@ -8,23 +8,24 @@ import org.springframework.stereotype.Service;
 import in.abhi8290.helloworld.shared.TokenService;
 import in.abhi8290.helloworld.auth.exception.UserNotFoundException;
 import in.abhi8290.helloworld.auth.exception.IncorrectPasswordException;
-import org.springframework.web.bind.annotation.*;
 
-import org.springframework.http.ResponseEntity;
+
+
 
 @Service
 public class AuthService {
 
   public final UserService userService;
+  public final TokenService tokenService;
 
-  TokenService tokenService = new TokenService();
 
-  public AuthService(UserService userService) {
+  public AuthService(UserService userService , TokenService tokenService) {
     this.userService = userService;
-  }
+    this.tokenService = tokenService;
+    }
 
   public String getAccessToken(String userId) {
-    return tokenService.generateAccessToken(userId);
+    return TokenService.generateAccessToken(userId);
   }
 
   public LoginResponseDto authenticate(String email, String password) throws Exception {
@@ -37,10 +38,13 @@ public class AuthService {
     }
     boolean correctUser = hashUtil.verifyPassword(password, currentUser.get().getPassword());
 
+
     if (!correctUser)
       throw new IncorrectPasswordException("Invalid Password Provided");
 
-    return new LoginResponseDto("Refresh token ", getAccessToken(currentUser.get().getId()));
+      String refreshToken = tokenService.createRefreshToken(currentUser.get());
+
+    return new LoginResponseDto(refreshToken, getAccessToken(currentUser.get().getId()));
 
   }
 
@@ -57,16 +61,17 @@ public class AuthService {
 
   public LoginResponseDto logoutUser(String userId) throws Exception {
     Optional<User> currentUser = userService.findById(userId);
+    
     if (currentUser.isEmpty()) {
       throw new UserNotFoundException("User not found with email: " + userId);
     }
-
-    return new LoginResponseDto("Refresh token ", getAccessToken(currentUser.get().getId()));
+    String refreshToken = tokenService.createRefreshToken(currentUser.get());
+    return new LoginResponseDto(refreshToken, getAccessToken(currentUser.get().getId()));
 
   }
 
   public String getRefreshAccessToken(String refreshToken) throws Exception {
-    String accessToken = tokenService.getNewAccessTokenFromRefreshToken(refreshToken);
+    String accessToken = TokenService.getNewAccessTokenFromRefreshToken(refreshToken);
     return accessToken;
   }
 
