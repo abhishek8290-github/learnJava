@@ -4,11 +4,10 @@ import in.abhi8290.helloworld.core.exception.common.InvalidTokenError;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Service;
-import in.abhi8290.helloworld.user.User;
+import in.abhi8290.helloworld.user.model.User;
 import java.security.Key;
 import java.util.Date;
-import in.abhi8290.helloworld.shared.Token;
-import in.abhi8290.helloworld.shared.TokenRepository;
+
 import in.abhi8290.helloworld.core.base.BaseService;
 import java.time.OffsetDateTime;
 import java.util.UUID;

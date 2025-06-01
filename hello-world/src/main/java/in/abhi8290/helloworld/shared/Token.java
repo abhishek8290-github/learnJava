@@ -7,7 +7,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.OffsetDateTime;
-import in.abhi8290.helloworld.user.User;
+import in.abhi8290.helloworld.user.model.User;
 
 @Entity
 @Table(name = "token")

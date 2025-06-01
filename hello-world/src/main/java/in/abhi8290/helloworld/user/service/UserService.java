@@ -1,9 +1,11 @@
-package in.abhi8290.helloworld.user;
+package in.abhi8290.helloworld.user.service;
 
 import in.abhi8290.helloworld.auth.exception.UserNotFoundException;
 import in.abhi8290.helloworld.core.base.BaseService;
-import in.abhi8290.helloworld.user.exception.InvalidEmailProvidedException;
-import in.abhi8290.helloworld.user.exception.UserAlreadyExistsException;
+import in.abhi8290.helloworld.core.exception.common.InvalidParamsProvidedException;
+import in.abhi8290.helloworld.core.exception.common.UserAlreadyExistsException;
+import in.abhi8290.helloworld.user.model.User;
+import in.abhi8290.helloworld.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import in.abhi8290.helloworld.shared.util.hashUtil;
 
@@ -27,8 +29,8 @@ public class UserService extends BaseService<User, String> {
 
   public Optional<User> findByEmail(String email) throws Exception {
 
-    User user = userRepository.findByEmail(email);
-    return Optional.of(user);
+    Optional<User> user = Optional.ofNullable(userRepository.findByEmail(email));
+    return user;
   }
 
   public User createUser(User user) throws Exception {
@@ -42,7 +44,7 @@ public class UserService extends BaseService<User, String> {
     boolean isValidEmail = emailValidator.isValid(user.getEmail());
 
     if (!isValidEmail) {
-      throw new InvalidEmailProvidedException("Inavalid Email Provided ");
+      throw new InvalidParamsProvidedException("Invalid Email Provided ");
     }
 
     String hashedPassword = hashUtil.getHashedPasswordWithSaltAndAlgorithm(user.getPassword());

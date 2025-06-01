@@ -3,13 +3,12 @@ package in.abhi8290.helloworld.core.exception;
 import in.abhi8290.helloworld.auth.exception.IncorrectPasswordException;
 import in.abhi8290.helloworld.auth.exception.UserNotFoundException;
 import in.abhi8290.helloworld.core.exception.common.InvalidTokenError;
-import in.abhi8290.helloworld.user.exception.InvalidEmailProvidedException;
-import in.abhi8290.helloworld.user.exception.UserAlreadyExistsException;
+import in.abhi8290.helloworld.core.exception.common.InvalidParamsProvidedException;
+import in.abhi8290.helloworld.core.exception.common.UserAlreadyExistsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
@@ -89,14 +88,14 @@ public class GlobalExceptionHandler {
 
   }
 
-  @ExceptionHandler(InvalidEmailProvidedException.class)
-  public ResponseEntity<ErrorResponseDto> handleInValidEmailErrorException(InvalidEmailProvidedException ex,
-      WebRequest request) {
+  @ExceptionHandler(InvalidParamsProvidedException.class)
+  public ResponseEntity<ErrorResponseDto> handleInValidParamsErrorException(InvalidParamsProvidedException ex,
+                                                                           WebRequest request) {
     logger.warn("Invalid Email Provided : {}", ex.getMessage());
 
     ErrorResponseDto errorResponse = new ErrorResponseDto(
         ex.getMessage(),
-        "INVALID_EMAIL",
+        "INVALID_PARAMS",
         HttpStatus.UNAUTHORIZED.value());
     return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
   }

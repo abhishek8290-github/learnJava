@@ -1,6 +1,7 @@
-package in.abhi8290.helloworld.user;
+package in.abhi8290.helloworld.user.repository;
 
 import in.abhi8290.helloworld.core.base.BaseRepository;
+import in.abhi8290.helloworld.user.model.User;
 import org.springframework.stereotype.Repository;
 
 @Repository

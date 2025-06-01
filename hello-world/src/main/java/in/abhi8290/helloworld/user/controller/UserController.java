@@ -1,5 +1,9 @@
-package in.abhi8290.helloworld.user;
+package in.abhi8290.helloworld.user.controller;
 import in.abhi8290.helloworld.shared.TokenService;
+import in.abhi8290.helloworld.user.service.UserService;
+import in.abhi8290.helloworld.user.dto.UserRequestDto;
+import in.abhi8290.helloworld.user.mapper.UserMapper;
+import in.abhi8290.helloworld.user.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -54,12 +58,11 @@ public class UserController {
     }
 
 
-
-    // POST create a user
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user) throws Exception {
-        logger.info("Creating user with email: {}", user.getEmail());
-
-        return ResponseEntity.ok(userService.createUser(user));
+    public ResponseEntity<User> createUser(@RequestBody UserRequestDto request) throws Exception {
+        logger.info("Creating user with email: {}", request.getEmail());
+        User user = UserMapper.toEntity(request);
+        User _created = userService.createUser(user);
+        return ResponseEntity.ok(_created);
     }
 }
