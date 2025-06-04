@@ -6,7 +6,7 @@ public class Main {
     BenchmarkMiddleware benchmark = new BenchmarkMiddleware();
     fileAnalyser fileAnalyser = new fileAnalyser();
     benchmark.setTask(fileAnalyser);
-    benchwmark.run();
+    // benchwmark.run();
   }
 
 }

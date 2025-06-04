@@ -1,13 +1,20 @@
 package in.abhi8290.helloworld.auth;
 
 import in.abhi8290.helloworld.auth.dto.*;
+
+import java.time.Duration;
 import java.util.Optional;
 import java.util.UUID;
 
+import in.abhi8290.helloworld.auth.model.OAuthStateData;
 import in.abhi8290.helloworld.shared.util.hashUtil;
 import in.abhi8290.helloworld.user.model.AuthProvider;
 import in.abhi8290.helloworld.user.service.UserService;
 import in.abhi8290.helloworld.user.model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import in.abhi8290.helloworld.shared.TokenService;
 import in.abhi8290.helloworld.auth.exception.UserNotFoundException;
@@ -22,6 +29,14 @@ public class AuthService {
 
   public final UserService userService;
   public final TokenService tokenService;
+  private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
+  private static final String OAUTH_STATE_PREFIX = "oauth:state:";
+  private static final String TEMP_TOKEN_PREFIX = "oauth:temp_token:";
+  private static final int STATE_EXPIRY_MINUTES = 10; // Short expiry for security
+  private static final int TEMP_TOKEN_EXPIRY_MINUTES = 5; // Very short expiry
+
+  @Autowired
+  private RedisTemplate<String, Object> redisTemplate;
 
 
   public AuthService(UserService userService , TokenService tokenService) {
@@ -104,9 +119,52 @@ public class AuthService {
   }
 
 
-//  public LoginResponseDto createUserIfNotExistsGoogleAuth(){
-//
-//  }
+  public String createOAuthState(String callbackUrl, String provider) {
+    String state = UUID.randomUUID().toString();
+    String redisKey = OAUTH_STATE_PREFIX + state;
+
+    OAuthStateData stateData = new OAuthStateData(callbackUrl, provider, System.currentTimeMillis());
+
+    try {
+      redisTemplate.opsForValue().set(
+              redisKey,
+              stateData,
+              Duration.ofMinutes(STATE_EXPIRY_MINUTES)
+      );
+
+      logger.info("Created OAuth state: {} for callback: {}", state, callbackUrl);
+      return state;
+
+    } catch (Exception e) {
+      logger.error("Failed to create OAuth state", e);
+      throw new RuntimeException("Failed to create OAuth state", e);
+    }
+  }
+  public OAuthStateData getAndRemoveOAuthState(String state) {
+    if (state == null || state.trim().isEmpty()) {
+        return null;
+    }
+    
+    String redisKey = OAUTH_STATE_PREFIX + state;
+    
+    try {
+        OAuthStateData stateData = (OAuthStateData) redisTemplate.opsForValue().get(redisKey);
+        
+        if (stateData != null) {
+            // Remove it immediately (one-time use for security)
+            redisTemplate.delete(redisKey);
+            logger.info("Retrieved and removed OAuth state: {}", state);
+            return stateData;
+        }
+        
+        logger.warn("OAuth state not found or expired: {}", state);
+        return null;
+        
+    } catch (Exception e) {
+        logger.error("Failed to retrieve OAuth state", e);
+        return null;
+    }
+}
 
 
 }

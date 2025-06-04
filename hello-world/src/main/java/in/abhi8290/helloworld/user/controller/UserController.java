@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 
 @RestController
@@ -33,18 +34,7 @@ public class UserController {
     public List<User> getAllUsers() {
         return userService.findAll();
     }
-
-    @GetMapping("/me")
-    public ResponseEntity<User> getCurrentUser(@RequestHeader("Authorization") String authHeader) throws Exception {
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            throw new RuntimeException("Missing or invalid Authorization header");
-        }
-        String token = authHeader.split("Bearer ")[1];
-        String userId = tokenService.validateAccessToken(token);
-        User user = userService.findUserById(userId);
-        return ResponseEntity.ok(user);
-    }
-
+    
     @GetMapping("/{id}")
     public User getUserById(@PathVariable String id) {
         return userService.findById(id)
@@ -64,5 +54,9 @@ public class UserController {
         User user = UserMapper.toEntity(request);
         User _created = userService.createUser(user);
         return ResponseEntity.ok(_created);
+    }
+    @GetMapping("/me")
+    public ResponseEntity<User> getAuthenticatedUser(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(user);
     }
 }
